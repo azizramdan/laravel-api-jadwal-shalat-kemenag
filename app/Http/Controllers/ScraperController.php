@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Cookie\CookieJar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
 class ScraperController extends Controller
 {
-    private function getCookies()
+    private function getCookies(): CookieJar
     {
         $response = Http::get('https://bimasislam.kemenag.go.id/jadwalshalat');
 
@@ -42,10 +43,8 @@ class ScraperController extends Controller
             'provinsi_id' => ['required', 'string'],
         ]);
 
-        $cookies = $this->getCookies();
-
         $response = Http::withOptions([
-                'cookies' => $cookies
+                'cookies' => $this->getCookies()
             ])
             ->asForm()
             ->post('https://bimasislam.kemenag.go.id/ajax/getKabkoshalat', [
@@ -75,10 +74,8 @@ class ScraperController extends Controller
             'tahun' => ['required', 'numeric', 'digits:4']
         ]);
 
-        $cookies = $this->getCookies();
-
         $response = Http::withOptions([
-                'cookies' => $cookies
+                'cookies' => $this->getCookies()
             ])
             ->asForm()
             ->post('https://bimasislam.kemenag.go.id/ajax/getShalatbln', [

@@ -39,8 +39,31 @@ class ScraperController extends Controller
     public function getKabupatenKota(Request $request)
     {
         $validated = $request->validate([
-            'provinsi_id' => ['required', 'string']
+            'provinsi_id' => ['required', 'string'],
         ]);
+
+        $cookies = $this->getCookies();
+
+        $response = Http::withOptions([
+                'cookies' => $cookies
+            ])
+            ->asForm()
+            ->post('https://bimasislam.kemenag.go.id/ajax/getKabkoshalat', [
+                'x' => urlencode($validated['provinsi_id']),
+            ]);
+
+        $kabkot = [];
+
+        (new Crawler($response->body()))
+            ->filter('option')
+            ->each(function (Crawler $node) use (&$kabkot) {
+                $kabkot[] = [
+                    'value' => $node->attr('value'),
+                    'text' => $node->text(),
+                ];
+            });
+
+        return response()->json($kabkot);
     }
 
     public function getJadwalShalat(Request $request)

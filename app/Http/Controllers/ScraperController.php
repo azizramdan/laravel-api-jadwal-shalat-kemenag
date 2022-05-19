@@ -28,10 +28,12 @@ class ScraperController extends Controller
         (new Crawler($response->body()))
             ->filter('#search_prov option')
             ->each(function (Crawler $node) use (&$provinsi) {
-                $provinsi[] = [
-                    'value' => $node->attr('value'),
-                    'text' => $node->text(),
-                ];
+                if ($node->text() != 'PUSAT') {
+                    $provinsi[] = [
+                        'value' => $node->attr('value'),
+                        'text' => $node->text(),
+                    ];
+                }
             });
 
         return response()->json($provinsi);

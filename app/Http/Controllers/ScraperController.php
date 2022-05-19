@@ -74,5 +74,20 @@ class ScraperController extends Controller
             'bulan' => ['required', 'numeric', 'between:1,12'],
             'tahun' => ['required', 'numeric', 'between:2012,2072']
         ]);
+
+        $cookies = $this->getCookies();
+
+        $response = Http::withOptions([
+                'cookies' => $cookies
+            ])
+            ->asForm()
+            ->post('https://bimasislam.kemenag.go.id/ajax/getShalatbln', [
+                'x' => urlencode($validated['provinsi_id']),
+                'y' => urlencode($validated['kabupaten_kota_id']),
+                'bln' => $validated['bulan'],
+                'thn' => $validated['tahun'],
+            ]);
+
+        return response()->json($response->json());
     }
 }

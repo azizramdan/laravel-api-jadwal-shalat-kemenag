@@ -72,7 +72,7 @@ class ScraperController extends Controller
             'provinsi_id' => ['required', 'string'],
             'kabupaten_kota_id' => ['required', 'string'],
             'bulan' => ['required', 'numeric', 'between:1,12'],
-            'tahun' => ['required', 'numeric', 'between:2012,2072']
+            'tahun' => ['required', 'numeric', 'digits:4']
         ]);
 
         $cookies = $this->getCookies();
